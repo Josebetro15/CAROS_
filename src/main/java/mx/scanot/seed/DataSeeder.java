@@ -86,7 +86,6 @@ public class DataSeeder implements CommandLineRunner {
       sig(jetta, "C0035", "Circuito sensor ABS rueda delantera izquierda", "baja", "Diagnosticar arnes ABS.", "open");
       ot("OT-2026-0138", hilux, "Servicio 120 mil km cerrado", "Saul", "done", 3);
     }
-    
     seedQuotes();
     Usuario encargado = usuarios.findByEmail("encargado@scanot.mx").orElse(null);
     for (Signal s : signals.findByStatusOrderByIdDesc("open")) {
