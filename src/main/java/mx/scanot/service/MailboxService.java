@@ -65,10 +65,6 @@ public class MailboxService {
         "Pide una contraseña nueva en este enlace. Caduca en 30 minutos:\n" + link,
         "recuperacion", null, null);
   }
-    send("reset-" + link, user.getEmail(), user.getEmail(), "CarOs · restablece tu contraseña",
-        "Pide una contraseña nueva en este enlace (caduca en 30 minutos): " + link,
-        "recuperacion", null, null);
-  }
 
   @Transactional
   public MailMessage compose(Usuario author, String toEmail, String subject, String body, String plate) {
@@ -109,7 +105,7 @@ public class MailboxService {
       try {
         correo.enviar(toEmail, subject, body);
       } catch (RuntimeException ignored) {
-        // El aviso queda en la app aunque Gmail falle.
+
       }
     }
     return m;
