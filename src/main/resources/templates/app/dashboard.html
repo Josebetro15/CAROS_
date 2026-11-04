@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Flota · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <h1>Flota</h1>
+    <div class="grid cols-4">
+      <div class="kpi"><span class="muted">Unidades</span><b th:text="${vehiculos}">0</b></div>
+      <div class="kpi"><span class="muted">Fallas abiertas</span><b th:text="${abiertas}">0</b></div>
+      <div class="kpi"><span class="muted">Esperando pieza</span><b th:text="${esperando}">0</b></div>
+      <div class="kpi"><span class="muted">En taller</span><b th:text="${enCurso}">0</b></div>
+    </div>
+    <section class="card" id="monitor">
+      <h2>Monitoreo en vivo</h2>
+      <p class="muted">Conectividad del escáner y alertas de señales abiertas.</p>
+      <p id="scan-state">Consultando el canal del escáner...</p>
+      <ul id="scan-alerts"></ul>
+    </section>
+    <div class="grid cols-2">
+      <section class="card">
+        <h2>Señales recientes</h2>
+        <div th:each="s : ${signals}" class="card" style="background:var(--elevated);margin-top:8px">
+          <div class="row" style="justify-content:space-between">
+            <span class="mono accent" th:text="${s.code}">P0000</span>
+            <span class="badge" th:text="${@etiquetas.de(s.severity)}">media</span>
+          </div>
+          <p class="muted" th:text="${s.vehicle.plate + ' · ' + s.description}">desc</p>
+        </div>
+      </section>
+      <section class="card">
+        <h2>Órdenes</h2>
+        <div th:each="o : ${orders}" class="card" style="background:var(--elevated);margin-top:8px">
+          <span class="mono accent" th:text="${o.folio}">OT</span>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <span class="badge" th:text="${@etiquetas.de(o.status)}">pendiente</span>
+        </div>
+      </section>
+    </div>
+  </main>
+  <script>
+    async function monitor() {
+      try {
+        const r = await fetch('/api/scanner/estado');
+        if (!r.ok) throw new Error();
+        const d = await r.json();
+        document.getElementById('scan-state').textContent =
+          'Escáner: ' + d.escaner + ' · ' + d.mensaje + ' Última lectura: ' + d.ultimaLectura + '. Señales abiertas: ' + d.senalesAbiertas;
+        const ul = document.getElementById('scan-alerts');
+        ul.innerHTML = '';
+        (d.alertas || []).forEach(function (a) {
+          const li = document.createElement('li');
+          li.textContent = a;
+          ul.appendChild(li);
+        });
+      } catch (e) {
+        document.getElementById('scan-state').textContent = 'Sin conexión con el canal del escáner.';
+      }
+    }
+    monitor();
+    setInterval(monitor, 5000);
+  </script>
+</body>
+</html>

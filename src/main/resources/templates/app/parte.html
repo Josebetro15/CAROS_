@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title th:text="${part.sku + ' · Inventario'}">Pieza</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div class="row" style="justify-content:space-between">
+      <h1 th:text="${part.sku}">SKU</h1>
+      <a class="btn sec" th:href="@{/app/partes}">Volver</a>
+    </div>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <section class="card grid">
+      <h2>Actualizar pieza</h2>
+      <form th:action="@{/app/partes/{id}(id=${part.id})}" method="post" class="grid cols-2">
+        <label>SKU <input name="sku" required minlength="2" maxlength="30" pattern="[A-Za-z0-9-]{2,30}" th:value="${part.sku}"/></label>
+        <label>Nombre <input name="name" required minlength="2" maxlength="80" th:value="${part.name}"/></label>
+        <label>Categoría <input name="category" required minlength="2" maxlength="40" th:value="${part.category}"/></label>
+        <label>Precio de almacén <input name="price" required inputmode="decimal" th:value="${part.price}"/></label>
+        <label>Existencia <input name="stock" type="number" required min="0" th:value="${part.stock}"/></label>
+        <label>Compatibilidad <input name="compatibility" maxlength="120" th:value="${part.compatibility}"/></label>
+        <label>Proveedor nuevo <input name="supplierName" maxlength="80" placeholder="Solo si quieres ligar otro"/></label>
+        <label>Ciudad <input name="supplierCity" maxlength="80"/></label>
+        <label>Precio del proveedor <input name="quotePrice" inputmode="decimal"/></label>
+        <label>Días de entrega <input name="leadDays" type="number" min="0" value="1"/></label>
+        <button class="btn" type="submit">Actualizar</button>
+      </form>
+    </section>
+    <section class="card grid" th:if="${!quotes.isEmpty()}">
+      <h2>Proveedores de esta pieza</h2>
+      <form th:each="q : ${quotes}" th:action="@{/app/partes/cotizacion}" method="post" class="grid cols-2">
+        <input type="hidden" name="quoteId" th:value="${q.id}"/>
+        <label>Proveedor <input name="supplierName" required minlength="2" maxlength="80" th:value="${q.supplier.name}"/></label>
+        <label>Ciudad <input name="supplierCity" required minlength="2" maxlength="80" th:value="${q.supplier.city}"/></label>
+        <label>Precio <input name="price" required inputmode="decimal" th:value="${q.price}"/></label>
+        <label>Días <input name="leadDays" type="number" min="0" required th:value="${q.leadDays}"/></label>
+        <button class="btn sec" type="submit">Guardar proveedor</button>
+      </form>
+    </section>
+    <section class="card">
+      <h2>Eliminar</h2>
+      <p class="muted">Se quita la pieza y sus cotizaciones. Esta acción no se deshace.</p>
+      <form th:action="@{/app/partes/{id}/eliminar(id=${part.id})}" method="post"
+            onsubmit="return confirm('¿Eliminar esta pieza del inventario?');">
+        <button class="btn" type="submit">Eliminar pieza</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>

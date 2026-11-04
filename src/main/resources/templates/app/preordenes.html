@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Preórdenes · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div>
+      <h1>De la falla a la OT</h1>
+      <p class="muted">Cada código de falla se liga a una pieza. Se compara el almacén contra los proveedores y se aparta la opción más barata. La unidad entra el día que la refacción está lista.</p>
+    </div>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${preorders == null || preorders.isEmpty()}" class="muted">Aún no hay preórdenes. Sube un reporte en Escáner.</p>
+    <div class="card" th:each="p : ${preorders}">
+      <div class="row" style="justify-content:space-between">
+        <span class="mono accent" th:text="${p.code + ' · ' + p.vehicle.plate}">P</span>
+        <span class="badge" th:classappend="${p.fromStock} ? 'ok' : 'warn'"
+              th:text="${p.fromStock} ? 'Almacén · entra hoy' : 'Proveedor · ' + p.leadDays + ' días'">x</span>
+      </div>
+      <p th:text="${p.partName + ' (' + p.sku + ')'}"></p>
+      <p class="muted" th:text="${p.supplierName + ' · $' + p.price + ' · ' + p.folio}"></p>
+    </div>
+  </main>
+</body>
+</html>

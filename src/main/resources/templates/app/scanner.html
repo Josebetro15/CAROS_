@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Escáner · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div>
+      <h1>Escáner</h1>
+      <p class="muted">Revisión de rutina: el reporte trae kilometraje, VIN y códigos de falla. CarOs busca la pieza, elige el mejor precio y abre la orden para cuando llegue.</p>
+    </div>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <section class="card" id="scan-live">
+      <h2>Conectividad</h2>
+      <p id="scan-state">Consultando...</p>
+    </section>
+    <div class="grid cols-2">
+      <section class="card grid">
+        <h2>Subir archivo</h2>
+        <p class="muted">JSON, CSV o TXT exportado por el aparato.</p>
+        <form th:action="@{/app/scanner/archivo}" method="post" enctype="multipart/form-data" class="grid">
+          <input type="file" name="file" accept=".json,.txt,.csv" required/>
+          <button class="btn" type="submit">Cargar reporte</button>
+        </form>
+        <a class="accent" th:href="@{/samples/lectura-obd.json}" download>Descargar muestra JSON</a>
+      </section>
+      <section class="card grid">
+        <h2>Escanear archivo</h2>
+        <p class="muted">Foto del reporte o del código QR. El VIN da de alta la unidad o la actualiza.</p>
+        <form th:action="@{/app/scanner/foto}" method="post" enctype="multipart/form-data" class="grid">
+          <input type="file" name="file" accept="image/*" capture="environment" required/>
+          <button class="btn" type="submit">Escanear</button>
+        </form>
+      </section>
+    </div>
+    <section>
+      <h2>Últimas lecturas</h2>
+      <div th:each="l : ${logs}" class="card" style="margin-top:8px">
+        <span class="mono accent" th:text="${l.vehicle.plate}">X</span>
+        <span class="muted" th:text="' · ' + ${l.source}">src</span>
+        <span th:if="${l.createdNew}" class="badge ok">Alta</span>
+        <p class="mono muted" th:text="${l.vin + ' · ' + l.km + ' km · ' + (l.dtcCodes.isEmpty() ? 'sin DTC' : l.dtcCodes)}">x</p>
+      </div>
+    </section>
+  </main>
+  <script>
+    async function estado() {
+      try {
+        const r = await fetch('/api/scanner/estado');
+        const d = await r.json();
+        document.getElementById('scan-state').textContent =
+          'Escáner ' + d.escaner + '. ' + d.mensaje + ' Señales abiertas: ' + d.senalesAbiertas + '.';
+      } catch (e) {
+        document.getElementById('scan-state').textContent = 'Escáner sin conexión.';
+      }
+    }
+    estado();
+    setInterval(estado, 5000);
+  </script>
+</body>
+</html>

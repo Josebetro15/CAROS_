@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Entrar · CarOs</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div class="auth-shell">
+    <section class="card auth-card">
+      <a th:href="@{/}"><img th:src="@{/img/logo.jpg}" alt="CarOs" style="height:52px;width:auto;border-radius:8px"/></a>
+      <h1>Bienvenido</h1>
+      <p class="muted">Entra como cliente, mecánico o supervisor del taller.</p>
+      <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+      <p th:if="${param.error}" class="flash err">Correo o contraseña incorrectos.</p>
+      <p th:if="${param.google}" class="flash err" th:text="${param.google[0]}">Google</p>
+      <div class="chips">
+        <button type="button" class="chip" onclick="fill('cliente@scanot.mx')">Cliente</button>
+        <button type="button" class="chip" onclick="fill('mecanico@scanot.mx')">Mecánico</button>
+        <button type="button" class="chip" onclick="fill('encargado@scanot.mx')">Supervisor</button>
+      </div>
+      <form th:action="@{/login}" method="post" class="grid">
+        <label>Correo <input id="user" type="email" name="username" required maxlength="120" placeholder="mecanico@scanot.mx"/></label>
+        <label>Contraseña <input id="pass" type="password" name="password" required minlength="6" placeholder="scanot123"/></label>
+        <button class="btn" type="submit">Entrar</button>
+      </form>
+      <a th:if="${google}" class="btn google" th:href="@{/oauth2/authorization/google}">Entrar con Google</a>
+      <a class="accent" th:href="@{/recuperar}">Olvidé mi contraseña</a>
+      <a class="accent" th:href="@{/registro}">Crear cuenta</a>
+    </section>
+  </div>
+  <script>
+    function fill(email){ document.getElementById('user').value=email; document.getElementById('pass').value='scanot123'; }
+  </script>
+</body>
+</html>

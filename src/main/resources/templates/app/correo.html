@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Correo · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div>
+      <h1>Avisos al cliente</h1>
+      <p class="muted">Cuando el escáner pide una pieza o cambia el estado, el aviso queda registrado para el cliente.</p>
+    </div>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <article class="card" th:each="m : ${mails}">
+      <div class="row" style="justify-content:space-between">
+        <span class="mono accent" th:text="${m.subject}">asunto</span>
+        <span class="badge" th:text="${@etiquetas.de(m.kind)}">tipo</span>
+      </div>
+      <p class="muted" th:text="'Para ' + ${m.toName} + ' · ' + ${m.toEmail}"></p>
+      <p th:text="${m.body}"></p>
+    </article>
+    <p th:if="${mails.isEmpty()}" class="muted">Todavía no hay avisos. Sube un reporte del escáner.</p>
+  </main>
+</body>
+</html>

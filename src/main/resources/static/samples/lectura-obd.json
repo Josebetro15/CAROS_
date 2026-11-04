@@ -1,0 +1,9 @@
+{
+  "vin": "1HGCM82633A004352",
+  "plate": "HND-33-52",
+  "brand": "Honda",
+  "model": "Civic",
+  "year": 2018,
+  "km": 97340,
+  "dtcs": ["P0301", "P0172"]
+}

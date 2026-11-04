@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 480 140" fill="none">
+  <rect width="480" height="140" rx="16" fill="#0c1014"/>
+  <path d="M40 100h140M54 80h28l14-28h56l14 28h28" stroke="#5eead4" stroke-width="8" stroke-linejoin="round"/>
+  <circle cx="88" cy="100" r="11" fill="#5eead4"/>
+  <circle cx="160" cy="100" r="11" fill="#5eead4"/>
+  <path d="M110 38c18-16 50-16 68 0" stroke="#5eead4" stroke-width="5" stroke-linecap="round"/>
+  <text x="210" y="94" fill="#5eead4" font-family="Segoe UI, system-ui, sans-serif" font-size="58" font-weight="700" letter-spacing="2">CarOs</text>
+</svg>

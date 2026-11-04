@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Órdenes · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <h1>Órdenes de trabajo</h1>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <section class="card grid" xmlns:sec="http://www.thymeleaf.org/extras/spring-security" sec:authorize="hasAnyRole('MECANICO','ENCARGADO')">
+      <h2>Nueva OT</h2>
+      <form th:action="@{/app/ordenes}" method="post" class="grid">
+        <label>Vehículo
+          <select name="vehicleId" required>
+            <option th:each="v : ${vehicles}" th:value="${v.id}" th:text="${v.plate + ' · ' + v.brand}"></option>
+          </select>
+        </label>
+        <label>Trabajo <input name="workDesc" required minlength="3" maxlength="255"/></label>
+        <label>Horas <input name="hours" inputmode="decimal" value="1.5" min="0.5" max="40"/></label>
+        <label th:unless="${soyMecanico}">Mecánico
+          <select name="mechanicId" required>
+            <option th:each="m : ${mecanicos}" th:value="${m.id}" th:text="${m.displayName}"></option>
+          </select>
+        </label>
+        <label>Refacción del inventario
+          <select name="partId">
+            <option value="">Sin pieza</option>
+            <option th:each="p : ${parts}" th:value="${p.id}" th:text="${p.sku + ' · ' + p.name + ' · existencia ' + p.stock}"></option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Crear</button>
+      </form>
+    </section>
+    <div class="card" th:each="o : ${orders}">
+      <span class="mono accent" th:text="${o.folio}">OT</span>
+      <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+      <p th:text="${o.workDesc}">d</p>
+      <p class="muted" th:if="${o.supplierName != null}" th:text="${o.supplierName + (o.leadDays == null ? '' : ' · ' + o.leadDays + ' días')}"></p>
+      <span class="badge" th:text="${@etiquetas.de(o.status)}">pendiente</span>
+    </div>
+  </main>
+</body>
+</html>

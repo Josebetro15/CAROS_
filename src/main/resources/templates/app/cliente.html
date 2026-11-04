@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Mi unidad · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <h1>Mi unidad</h1>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <section class="card" th:if="${#lists.isEmpty(vehicles)}">
+      <h2>Vincula tu vehículo</h2>
+      <p class="muted">Demo: placa NVX-18-42 · VIN 3N1CN7AP8ML800011</p>
+      <form th:action="@{/app/vincular}" method="post" class="grid">
+        <label>Placa <input name="plate" required minlength="5" maxlength="12"/></label>
+        <label>VIN <input name="vin" required minlength="11" maxlength="17"/></label>
+        <button class="btn" type="submit">Vincular</button>
+      </form>
+    </section>
+    <section class="card" th:each="v : ${vehicles}">
+      <h2 th:text="${v.brand + ' ' + v.model}">auto</h2>
+      <p class="mono accent" th:text="${v.plate}">XXX</p>
+      <p class="muted" th:text="'VIN ' + ${v.vin} + ' · ' + ${v.km} + ' km · salud ' + ${v.health}">x</p>
+      <a class="btn sec" th:href="@{/app/vehiculos/{id}(id=${v.id})}">Ver estado</a>
+    </section>
+    <section class="card" th:if="${!#lists.isEmpty(updates)}">
+      <h2>Últimas actualizaciones</h2>
+      <div th:each="u : ${updates}" style="margin-top:10px">
+        <p><b th:text="${@etiquetas.de(u.kind)}">kind</b> — <span th:text="${u.message}">msg</span></p>
+        <p class="muted" th:text="${u.vehicle.plate}">placa</p>
+        <div class="media" th:each="m : ${u.media}">
+          <img th:if="${m.mediaType == 'image'}" th:src="${m.url}" alt="avance"/>
+          <video th:if="${m.mediaType == 'video'}" th:src="${m.url}" controls></video>
+        </div>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Inventario · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div>
+      <h1>Inventario de refacciones</h1>
+      <p class="muted">SKU, categoría, existencia y compatibilidad. Para cambiar o quitar una pieza, usa Modificar.</p>
+    </div>
+    <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+    <p th:if="${error}" class="flash err" th:text="${error}"></p>
+    <section class="card grid">
+      <h2>Agregar pieza</h2>
+      <form th:action="@{/app/partes}" method="post" class="grid cols-2">
+        <label>SKU <input name="sku" required minlength="2" maxlength="30" pattern="[A-Za-z0-9-]{2,30}" placeholder="BUJ-01"/></label>
+        <label>Nombre <input name="name" required minlength="2" maxlength="80"/></label>
+        <label>Categoría <input name="category" required minlength="2" maxlength="40" placeholder="Encendido"/></label>
+        <label>Precio de almacén <input name="price" required inputmode="decimal" min="0" value="0"/></label>
+        <label>Existencia <input name="stock" type="number" required min="0" value="0"/></label>
+        <label>Compatibilidad <input name="compatibility" maxlength="120" placeholder="Nissan Versa"/></label>
+        <label>Proveedor <input name="supplierName" maxlength="80" placeholder="RefaNorte"/></label>
+        <label>Ciudad <input name="supplierCity" maxlength="80" placeholder="Ecatepec"/></label>
+        <label>Precio del proveedor <input name="quotePrice" inputmode="decimal" placeholder="1980"/></label>
+        <label>Días de entrega <input name="leadDays" type="number" min="0" value="1"/></label>
+        <button class="btn" type="submit">Guardar pieza</button>
+      </form>
+    </section>
+    <div class="card" th:each="p : ${parts}">
+      <div class="row" style="justify-content:space-between">
+        <span class="mono accent" th:text="${p.sku}">SKU</span>
+        <span th:text="'Almacén $' + ${p.price} + ' · existencia ' + ${p.stock}">0</span>
+      </div>
+      <p th:text="${p.name}">name</p>
+      <p class="muted" th:text="${p.category + ' · ' + p.compatibility}">c</p>
+      <p class="muted" th:each="q : ${quotes}" th:if="${q.part.id == p.id}"
+         th:text="${q.supplier.name + ' · $' + q.price + ' · ' + q.leadDays + ' días'}"></p>
+      <a class="btn sec" th:href="@{/app/partes/{id}(id=${p.id})}">Modificar</a>
+    </div>
+  </main>
+</body>
+</html>

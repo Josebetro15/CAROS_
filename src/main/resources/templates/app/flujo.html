@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Flujo · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <div>
+      <h1>Flujo del taller</h1>
+      <p class="muted">Recepción, diagnóstico, refacciones y orden. La unidad pasa por ejecución, control de calidad, entrega y facturación.</p>
+    </div>
+    <div class="board">
+      <section>
+        <h2 class="muted">Esperando pieza</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'esperando_refaccion'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+          <form th:action="@{/app/flujo/{id}/avanzar(id=${o.id})}" method="post"><button class="btn sec" type="submit">Ya llegó</button></form>
+        </div>
+      </section>
+      <section>
+        <h2 class="muted">Lista para entrar</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'pending'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+          <form th:action="@{/app/flujo/{id}/avanzar(id=${o.id})}" method="post"><button class="btn sec" type="submit">Ejecutar</button></form>
+        </div>
+      </section>
+      <section>
+        <h2 class="muted">Ejecución</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'in_progress'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+          <form th:action="@{/app/flujo/{id}/avanzar(id=${o.id})}" method="post"><button class="btn sec" type="submit">A calidad</button></form>
+        </div>
+      </section>
+      <section>
+        <h2 class="muted">Control de calidad</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'calidad'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+          <form th:action="@{/app/flujo/{id}/avanzar(id=${o.id})}" method="post"><button class="btn sec" type="submit">Facturar</button></form>
+        </div>
+      </section>
+      <section>
+        <h2 class="muted">Entrega y facturación</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'facturado'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+          <form th:action="@{/app/flujo/{id}/avanzar(id=${o.id})}" method="post"><button class="btn sec" type="submit">Cerrar entrega</button></form>
+        </div>
+      </section>
+      <section>
+        <h2 class="muted">Cerrada</h2>
+        <div class="card" th:each="o : ${orders}" th:if="${o.status == 'done'}">
+          <p class="mono accent" th:text="${o.folio}">OT</p>
+          <p th:text="${o.vehicle.plate + ' · ' + o.technician}">x</p>
+          <p class="muted" th:text="${o.workDesc}">d</p>
+        </div>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

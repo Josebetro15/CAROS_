@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Nueva contraseña · CarOs</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div class="auth-shell">
+    <section class="card auth-card">
+      <a th:href="@{/}"><img th:src="@{/img/logo.jpg}" alt="CarOs" style="height:52px;width:auto;border-radius:8px"/></a>
+      <h1>Nueva contraseña</h1>
+      <p th:if="${error}" class="flash err" th:text="${error}"></p>
+      <form th:action="@{/recuperar/{token}(token=${token})}" method="post" class="grid">
+        <label>Contraseña <input type="password" name="password" required minlength="6" maxlength="72"/></label>
+        <label>Repítela <input type="password" name="password2" required minlength="6" maxlength="72"/></label>
+        <button class="btn" type="submit">Guardar</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

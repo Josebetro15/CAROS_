@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Inspección · CarOs</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <h1>Inspección visual</h1>
+    <p th:if="${vacio}" class="muted">No hay unidades para inspeccionar.</p>
+    <section class="card grid" th:unless="${vacio}">
+      <div class="row" style="justify-content:space-between">
+        <div>
+          <p class="mono accent" th:text="${v.plate}">placa</p>
+          <h2 th:text="${v.brand + ' ' + v.model + ' · ' + v.year}">auto</h2>
+          <p class="muted" th:text="${v.km + ' km · salud ' + v.health + ' · unidad ' + numero + ' de ' + total}">km</p>
+        </div>
+        <div class="row">
+          <a class="btn sec" th:href="@{/app/vehiculos/inspeccion(id=${prev})}">Unidad anterior</a>
+          <a class="btn sec" th:href="@{/app/vehiculos/inspeccion(id=${next})}">Siguiente unidad</a>
+        </div>
+      </div>
+      <div class="stage" id="stage">
+        <img th:src="@{/img/hero.jpg}" alt="Unidad en inspeccion" id="foto"/>
+      </div>
+      <label>Zoom
+        <input id="zoom" type="range" min="1" max="3" step="0.1" value="1"/>
+      </label>
+    </section>
+  </main>
+  <script>
+    var zoom = document.getElementById('zoom');
+    var foto = document.getElementById('foto');
+    if (zoom && foto) {
+      zoom.addEventListener('input', function () {
+        foto.style.transform = 'scale(' + zoom.value + ')';
+      });
+    }
+  </script>
+</body>
+</html>

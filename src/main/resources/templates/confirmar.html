@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Confirmar cuenta · CarOs</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div class="auth-shell">
+    <section class="card auth-card">
+      <a th:href="@{/}"><img th:src="@{/img/logo.jpg}" alt="CarOs" style="height:52px;width:auto;border-radius:8px"/></a>
+      <h1>Confirma tu cuenta</h1>
+      <p class="muted" th:text="'Cuenta de ' + ${rolTexto} + ' para ' + ${solicitud.correo}">correo</p>
+      <p th:if="${ok}" class="flash ok" th:text="${ok}"></p>
+      <p th:if="${error}" class="flash err" th:text="${error}"></p>
+      <p class="muted" th:if="${solicitud.correoOk}">Tu correo ya quedó confirmado.</p>
+      <p class="muted" th:unless="${solicitud.correoOk}">Revisa tu correo: ahí está el código de 6 dígitos y también un enlace.</p>
+      <p class="muted" th:if="${solicitud.pideAcceso}" th:text="'El código de acceso se envió al supervisor ' + ${supervisor} + '.'"></p>
+      <form th:action="@{/registro/confirmar}" method="post" class="grid">
+        <input type="hidden" name="correo" th:value="${solicitud.correo}"/>
+        <label th:unless="${solicitud.correoOk}">Código de tu correo
+          <input name="codigoCorreo" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="6 dígitos"/>
+        </label>
+        <label th:if="${solicitud.pideAcceso}">Código de acceso del supervisor
+          <input name="codigoAcceso" required pattern="[0-9]{6}" maxlength="6" inputmode="numeric" autocomplete="one-time-code" placeholder="6 dígitos"/>
+        </label>
+        <button class="btn" type="submit">Crear cuenta</button>
+      </form>
+      <form th:action="@{/registro/reenviar}" method="post">
+        <input type="hidden" name="correo" th:value="${solicitud.correo}"/>
+        <button class="btn sec" type="submit">Reenviar código</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>

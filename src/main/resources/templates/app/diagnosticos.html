@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Diagnósticos · CarOs</title>
+  <script>(function(){var t=localStorage.getItem('caros-theme')||'dark';document.documentElement.setAttribute('data-theme',t);})();</script>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div th:replace="~{fragments/nav :: bar}"></div>
+  <main class="wrap grid">
+    <h1>Diagnósticos</h1>
+    <div class="card" th:each="s : ${signals}">
+      <div class="row" style="justify-content:space-between">
+        <span class="mono accent" th:text="${s.code}">P</span>
+        <span class="badge" th:classappend="${s.severity == 'alta'} ? ' danger' : (${s.severity == 'media'} ? ' warn' : '')" th:text="${@etiquetas.de(s.severity)}">s</span>
+      </div>
+      <p th:text="${s.vehicle.plate + ' · ' + s.description}">d</p>
+      <p class="muted" th:text="${s.suggestion}">sug</p>
+      <form th:if="${s.status == 'open'}" th:action="@{/app/diagnosticos/{id}/cerrar(id=${s.id})}" method="post">
+        <button class="btn sec" type="submit">Cerrar señal</button>
+      </form>
+    </div>
+  </main>
+</body>
+</html>

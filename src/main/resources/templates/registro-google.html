@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <title>Rol de Google · CarOs</title>
+  <link rel="stylesheet" th:href="@{/css/app.css}"/>
+</head>
+<body>
+  <div class="auth-shell">
+    <section class="card auth-card">
+      <a th:href="@{/}"><img th:src="@{/img/logo.jpg}" alt="CarOs" style="height:52px;width:auto;border-radius:8px"/></a>
+      <h1>Elige tu rol</h1>
+      <p class="muted" th:text="${nombre + ' · ' + correo}">cuenta</p>
+      <p class="muted">Cliente entra de una vez. Mecánico y supervisor necesitan el código que se envía a <span th:text="${supervisor}">supervisor</span>.</p>
+      <p th:if="${error}" class="flash err" th:text="${error}"></p>
+      <form th:action="@{/registro/google}" method="post" class="grid">
+        <label>Rol
+          <select name="rol" required>
+            <option value="CLIENTE">Cliente</option>
+            <option value="MECANICO">Mecánico</option>
+            <option value="ENCARGADO">Supervisor</option>
+          </select>
+        </label>
+        <button class="btn" type="submit">Continuar</button>
+      </form>
+    </section>
+  </div>
+</body>
+</html>
