@@ -66,6 +66,7 @@ public class MailboxService {
         "recuperacion", null, null);
   }
 
+
   @Transactional
   public MailMessage compose(Usuario author, String toEmail, String subject, String body, String plate) {
     String to = toEmail.trim().toLowerCase();
