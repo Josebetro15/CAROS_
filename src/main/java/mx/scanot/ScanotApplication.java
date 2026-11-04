@@ -15,7 +15,7 @@ public class ScanotApplication {
     SpringApplication.run(ScanotApplication.class, args);
   }
 
-  /** Render entrega postgres://usuario:clave@host/base. Spring necesita jdbc. */
+  /** Railway entrega postgres://usuario:clave@host/base. Spring necesita jdbc. */
   private static void prepararBase() {
     String raw = System.getenv("DATABASE_URL");
     if (raw == null || raw.isBlank()) return;
@@ -30,8 +30,10 @@ public class ScanotApplication {
     String usuario = url(credenciales.substring(0, sep));
     String clave = url(credenciales.substring(sep + 1));
     String jdbc = "jdbc:postgresql://" + host;
-    jdbc += jdbc.contains("?") ? "&" : "?";
-    jdbc += "sslmode=require";
+    if (!host.contains("railway.internal") && !jdbc.contains("sslmode=")) {
+      jdbc += jdbc.contains("?") ? "&" : "?";
+      jdbc += "sslmode=require";
+    }
     System.setProperty("spring.datasource.url", jdbc);
     System.setProperty("spring.datasource.username", usuario);
     System.setProperty("spring.datasource.password", clave);
